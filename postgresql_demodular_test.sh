@@ -66,14 +66,15 @@ ARRAY=( "postgresql:0"
 for item in "${ARRAY[@]}" ; do
     PACKAGES="${item%%:*}"
     VALUE="${item##*:}"
-    print "installing %s test result: " "$PACKAGES"
-    RESULT=$(dnf install $PACKAGES -y &>>log)
-    if [ $RESULT == $VALUE ]
+    printf "installing %s test result: " "$PACKAGES"
+    dnf install $PACKAGES -y &>>log
+    RESULT=$?
+    if [ "$RESULT" == "$VALUE" ]
     then
 	    echo "OK"
     else
 	    echo "FAIL"
     fi
     echo "---------------------------------\n-------------------------" >>log
-    dnf remove pg_repack postgresql* &>/dev/null
+    dnf remove 'pg_repack' 'postgresql*' -y &>/dev/null
 done

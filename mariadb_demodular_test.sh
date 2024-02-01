@@ -68,14 +68,15 @@ ARRAY=( "mariadb:0"
 for item in "${ARRAY[@]}" ; do
     PACKAGES="${item%%:*}"
     VALUE="${item##*:}"
-    print "installing %s test result: " "$PACKAGES"
-    RESULT=$(dnf install $PACKAGES -y &>>log)
-    if [ $RESULT == $VALUE ]
+    printf "installing %s test result: " "$PACKAGES"
+    dnf install $PACKAGES -y &>>log
+    RESULT=$?
+    if [ "$RESULT" == "$VALUE" ]
     then
 	    echo "OK"
     else
 	    echo "FAIL"
     fi
     echo "---------------------------------\n-------------------------" >>log
-    dnf remove mariadb* &>/dev/null
+    dnf remove 'mariadb*' -y &>/dev/null
 done
